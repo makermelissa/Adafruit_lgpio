@@ -34,8 +34,8 @@ skip = "*-musllinux_*"
 [tool.cibuildwheel.linux]
 archs = ["aarch64", "armv7l"]
 # manylinux2014 (CentOS 7) has kernel 3.10 headers -- too old for lgpio's GPIO v2 API.
-# manylinux_2_34 (AlmaLinux 9, kernel 5.14) has gpio_v2_* structs; matches upstream lgpio PyPI wheels.
-manylinux-aarch64-image = "quay.io/pypa/manylinux_2_34_aarch64"
+# manylinux_2_28 (AlmaLinux 8) has cp38 for cibuildwheel internals; gpio.h is patched below.
+manylinux-aarch64-image = "quay.io/pypa/manylinux_2_28_aarch64"
 # armv7l has no official manylinux image; cibuildwheel produces linux_armv7l wheels (same as upstream lgpio).
 # swig generates lgpio.py from lgpio.i; gpio.h patch adds GPIO v2 defs missing from older container images.
 before-all = "(yum install -y swig || apt-get install -y swig) && curl -fsSL https://raw.githubusercontent.com/torvalds/linux/v6.1/include/uapi/linux/gpio.h -o /usr/include/linux/gpio.h"
