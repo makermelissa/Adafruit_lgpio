@@ -1,0 +1,41 @@
+# SPDX-FileCopyrightText: 2026 Melissa LeBlanc-Williams for Adafruit Industries
+#
+# SPDX-License-Identifier: MIT
+
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "adafruit-lgpio"
+# Track upstream lgpio version exactly so pip dependency resolution is sane.
+# When lgpio releases a new version, bump this to match and tag vX.Y.Z.W.
+version = "0.2.2.0"
+description = "Adafruit pre-built lgpio wheels for Python 3.13+ on Linux ARM/x86"
+readme = "README.md"
+license = { text = "Unlicense" }
+requires-python = ">=3.13"
+keywords = ["lgpio", "gpio", "raspberry pi", "linux", "arm"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: The Unlicense (Unlicense)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
+    "Operating System :: POSIX :: Linux",
+]
+
+# Upstream lgpio ships wheels for cp39-cp312 on PyPI; we fill in 3.13+.
+[tool.cibuildwheel]
+build = "cp313-* cp314-* cp315-*"
+skip = "*-musllinux_*"
+
+[tool.cibuildwheel.linux]
+archs = ["aarch64", "armv7l"]
+# swig generates lgpio.py from lgpio.i at build time
+before-all = "apt-get install -y swig || yum install -y swig"
+# auditwheel bundles librt/libdl into the wheel for portability.
+# Fallback cp handles "already standalone" wheels auditwheel refuses to repack.
+repair-wheel-command = "auditwheel repair -w {dest_dir} {wheel} || cp {wheel} {dest_dir}"

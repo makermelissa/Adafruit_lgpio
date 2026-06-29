@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: 2026 Melissa LeBlanc-Williams for Adafruit Industries
+#
+# SPDX-License-Identifier: MIT
+
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+dist/
+build/
+wheelhouse/
+.venv/
+*.DS_Store
+.vscode

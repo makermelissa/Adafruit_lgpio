@@ -1,0 +1,10 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: lg
+Upstream-Contact: joan@abyz.me.uk
+Source: https://github.com/joan2937/lg
+
+# Vendored C source and SWIG interface from upstream lgpio (joan2937/lg).
+# These files are not modified by Adafruit.
+Files: src/* lgpio.i lgpio_extra.py
+Copyright: joan@abyz.me.uk
+License: Unlicense
