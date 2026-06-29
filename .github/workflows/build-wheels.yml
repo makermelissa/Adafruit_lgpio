@@ -63,8 +63,6 @@ jobs:
     if: github.event_name == 'release' && startsWith(github.repository_owner, 'adafruit')
     needs: [build_wheels, build_sdist]
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
     steps:
       - uses: actions/download-artifact@v6
         with:
@@ -76,5 +74,11 @@ jobs:
           name: sdist
           path: dist/
 
+      - name: Install twine
+        run: pip install --upgrade twine
+
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # v1.13.0
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: twine upload dist/*
