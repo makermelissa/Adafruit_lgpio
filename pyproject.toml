@@ -13,13 +13,12 @@ name = "adafruit-lgpio"
 version = "0.2.2.0"
 description = "Adafruit pre-built lgpio wheels for Python 3.13+ on Linux ARM/x86"
 readme = "README.md"
-license = { text = "Unlicense" }
+license = "Unlicense"
 requires-python = ">=3.13"
 keywords = ["lgpio", "gpio", "raspberry pi", "linux", "arm"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: The Unlicense (Unlicense)",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
@@ -34,8 +33,13 @@ skip = "*-musllinux_*"
 
 [tool.cibuildwheel.linux]
 archs = ["aarch64", "armv7l"]
-# swig generates lgpio.py from lgpio.i at build time
-before-all = "apt-get install -y swig || yum install -y swig"
+# manylinux2014 (CentOS 7) has kernel 3.10 headers -- too old for lgpio's GPIO v2 API.
+# manylinux_2_34 (AlmaLinux 9, kernel 5.14) has gpio_v2_* structs; matches upstream lgpio PyPI wheels.
+manylinux-aarch64-image = "manylinux_2_34"
+# manylinux_2_28 (AlmaLinux 8) lacks GPIO v2 headers; patch gpio.h from kernel.org before building.
+manylinux-armv7l-image = "manylinux_2_28"
+# swig generates lgpio.py from lgpio.i; gpio.h patch adds GPIO v2 defs missing from older manylinux images.
+before-all = "(yum install -y swig || apt-get install -y swig) && curl -fsSL https://raw.githubusercontent.com/torvalds/linux/v6.1/include/uapi/linux/gpio.h -o /usr/include/linux/gpio.h"
 # auditwheel bundles librt/libdl into the wheel for portability.
 # Fallback cp handles "already standalone" wheels auditwheel refuses to repack.
 repair-wheel-command = "auditwheel repair -w {dest_dir} {wheel} || cp {wheel} {dest_dir}"
