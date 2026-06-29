@@ -13,7 +13,7 @@ name = "adafruit-lgpio"
 version = "0.2.2.0"
 description = "Adafruit pre-built lgpio wheels for Python 3.13+ on Linux ARM/x86"
 readme = "README.md"
-license = "Unlicense"
+license = { text = "Unlicense" }
 requires-python = ">=3.13"
 keywords = ["lgpio", "gpio", "raspberry pi", "linux", "arm"]
 classifiers = [
